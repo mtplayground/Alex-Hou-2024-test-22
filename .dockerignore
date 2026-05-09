@@ -1,0 +1,11 @@
+.git
+.claude
+dist
+node_modules
+.env
+.env.local
+.env.*.local
+.gh_token
+.progress
+.db_decision
+npm-debug.log*
