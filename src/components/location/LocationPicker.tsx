@@ -32,6 +32,8 @@ function getGeolocationButtonLabel(
       return 'Locating...'
     case 'ready':
       return 'Use my location'
+    case 'permission-denied':
+      return 'Location blocked'
     case 'unsupported':
       return 'Geolocation unavailable'
     case 'error':
@@ -154,7 +156,9 @@ export function LocationPicker({
           </div>
 
           {geolocationError !== null ? (
-            <p className="mt-3 text-sm text-amber-700">{geolocationError}</p>
+            <div className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+              {geolocationError}
+            </div>
           ) : null}
 
           <div className="mt-6">
@@ -168,7 +172,9 @@ export function LocationPicker({
             <div className="mt-4 max-h-80 space-y-3 overflow-y-auto pr-1">
               {searchResults.length === 0 ? (
                 <div className="rounded-2xl border border-dashed border-slate-200 px-4 py-5 text-sm text-slate-500">
-                  Search for a city to see matching locations.
+                  {searchStatus === 'success'
+                    ? `No cities matched "${searchTerm}". Try a broader search.`
+                    : 'Search for a city to see matching locations.'}
                 </div>
               ) : (
                 searchResults.map((result) => (
