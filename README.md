@@ -67,4 +67,5 @@ docker build \
 - Prettier for code formatting
 - Tailwind CSS integrated through the Vite plugin and `src/index.css`
 - Typed Vite environment loader in `src/config/env.ts`
+- Reusable clock UI in `src/components/clock` with a per-second `useNow()` hook
 - Multi-stage Docker build with nginx SPA routing
