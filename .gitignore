@@ -1,6 +1,9 @@
 target/
 dist/
 node_modules/
+.env
+.env.local
+.env.*.local
 .gh_token
 .claude/
 .database_url
