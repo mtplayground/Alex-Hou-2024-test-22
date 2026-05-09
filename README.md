@@ -69,4 +69,5 @@ docker build \
 - Typed Vite environment loader in `src/config/env.ts`
 - Reusable clock UI in `src/components/clock` with a per-second `useNow()` hook
 - Local 12h/24h clock format toggle via the `clockFormat` prop
+- React Query provider plus typed Open-Meteo forecast client under `src/features/weather`
 - Multi-stage Docker build with nginx SPA routing
