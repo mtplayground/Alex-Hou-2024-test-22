@@ -74,4 +74,5 @@ docker build \
 - `CurrentWeather` UI backed by a 10-minute React Query refresh in `src/components/weather/CurrentWeather.tsx`
 - `Forecast` daily outlook cards in `src/components/weather/Forecast.tsx`
 - Typed Open-Meteo geocoding client and `useLocation()` hook under `src/features/geocoding`
+- Header-triggered `LocationPicker` modal/drawer in `src/components/location/LocationPicker.tsx`
 - Multi-stage Docker build with nginx SPA routing
