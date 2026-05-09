@@ -6,7 +6,6 @@ import { getOpenMeteoWeatherCodePresentation } from './weatherCodes'
 export const FORECAST_REFRESH_INTERVAL_MS = 600_000
 
 const DAILY_FORECAST_FIELDS = [
-  'time',
   'weather_code',
   'temperature_2m_max',
   'temperature_2m_min',
