@@ -11,10 +11,20 @@ A Vite + React + TypeScript frontend scaffolded for incremental issue-based deve
 
 ```bash
 npm install
+cp .env.example .env
 npm run dev
 ```
 
 The Vite dev server listens on `0.0.0.0:8080`.
+
+## Environment variables
+
+Copy `.env.example` to `.env` and adjust values as needed.
+
+```bash
+VITE_DEFAULT_CITY=San Francisco
+VITE_REFRESH_INTERVAL_MS=60000
+```
 
 ## Available scripts
 
@@ -33,3 +43,4 @@ npm run preview
 - ESLint flat config with type-aware TypeScript rules
 - Prettier for code formatting
 - Tailwind CSS integrated through the Vite plugin and `src/index.css`
+- Typed Vite environment loader in `src/config/env.ts`
