@@ -73,4 +73,5 @@ docker build \
 - WMO weather code lookup with labels and emoji icons in `src/features/weather/weatherCodes.ts`
 - `CurrentWeather` UI backed by a 10-minute React Query refresh in `src/components/weather/CurrentWeather.tsx`
 - `Forecast` daily outlook cards in `src/components/weather/Forecast.tsx`
+- Typed Open-Meteo geocoding client and `useLocation()` hook under `src/features/geocoding`
 - Multi-stage Docker build with nginx SPA routing
