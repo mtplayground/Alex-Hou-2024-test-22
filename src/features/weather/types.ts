@@ -26,9 +26,15 @@ export const OPEN_METEO_DAILY_FIELDS = [
   'sunset',
 ] as const
 
+export const OPEN_METEO_WEATHER_CODES = [
+  0, 1, 2, 3, 45, 48, 51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77,
+  80, 81, 82, 85, 86, 95, 96, 99,
+] as const
+
 export type OpenMeteoCurrentField = (typeof OPEN_METEO_CURRENT_FIELDS)[number]
 export type OpenMeteoHourlyField = (typeof OPEN_METEO_HOURLY_FIELDS)[number]
 export type OpenMeteoDailyField = (typeof OPEN_METEO_DAILY_FIELDS)[number]
+export type OpenMeteoWeatherCode = (typeof OPEN_METEO_WEATHER_CODES)[number]
 
 export type OpenMeteoForecastRequest = {
   latitude: number
@@ -49,7 +55,9 @@ type OpenMeteoHourlyUnits = Partial<Record<OpenMeteoHourlyField, string>>
 type OpenMeteoDailyUnits = Partial<Record<OpenMeteoDailyField, string>>
 
 type OpenMeteoCurrentData = Partial<
-  Record<Exclude<OpenMeteoCurrentField, 'is_day'>, number>
+  Record<Exclude<OpenMeteoCurrentField, 'is_day' | 'weather_code'>, number> & {
+    weather_code: OpenMeteoWeatherCode
+  }
 > & {
   time: string
   interval?: number
@@ -58,14 +66,26 @@ type OpenMeteoCurrentData = Partial<
 
 type OpenMeteoHourlyData = {
   time: string[]
-} & Partial<Record<Exclude<OpenMeteoHourlyField, 'time'>, number[]>>
+} & Partial<
+  Record<Exclude<OpenMeteoHourlyField, 'time' | 'weather_code'>, number[]> & {
+    weather_code: OpenMeteoWeatherCode[]
+  }
+>
 
 type OpenMeteoDailyData = {
   time: string[]
   sunrise?: string[]
   sunset?: string[]
 } & Partial<
-  Record<Exclude<OpenMeteoDailyField, 'time' | 'sunrise' | 'sunset'>, number[]>
+  Record<
+    Exclude<
+      OpenMeteoDailyField,
+      'time' | 'sunrise' | 'sunset' | 'weather_code'
+    >,
+    number[]
+  > & {
+    weather_code: OpenMeteoWeatherCode[]
+  }
 >
 
 export type OpenMeteoForecastResponse = {

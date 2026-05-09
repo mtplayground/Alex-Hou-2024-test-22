@@ -70,4 +70,5 @@ docker build \
 - Reusable clock UI in `src/components/clock` with a per-second `useNow()` hook
 - Local 12h/24h clock format toggle via the `clockFormat` prop
 - React Query provider plus typed Open-Meteo forecast client under `src/features/weather`
+- WMO weather code lookup with labels and emoji icons in `src/features/weather/weatherCodes.ts`
 - Multi-stage Docker build with nginx SPA routing

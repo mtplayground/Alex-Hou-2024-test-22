@@ -2,6 +2,7 @@ import {
   OPEN_METEO_CURRENT_FIELDS,
   OPEN_METEO_DAILY_FIELDS,
   OPEN_METEO_HOURLY_FIELDS,
+  OPEN_METEO_WEATHER_CODES,
   type OpenMeteoForecastRequest,
   type OpenMeteoForecastResponse,
 } from './types'
@@ -16,6 +17,7 @@ const FORECAST_ENDPOINT = 'https://api.open-meteo.com/v1/forecast'
 const currentFieldSet = new Set<string>(OPEN_METEO_CURRENT_FIELDS)
 const hourlyFieldSet = new Set<string>(OPEN_METEO_HOURLY_FIELDS)
 const dailyFieldSet = new Set<string>(OPEN_METEO_DAILY_FIELDS)
+const weatherCodeSet = new Set<number>(OPEN_METEO_WEATHER_CODES)
 
 function assertFiniteCoordinate(value: number, label: string): void {
   if (!Number.isFinite(value)) {
@@ -118,6 +120,33 @@ function validateNumberArrayField(
   }
 }
 
+function validateWeatherCode(value: unknown, field: string): void {
+  if (typeof value !== 'number' || !weatherCodeSet.has(value)) {
+    throw new Error(
+      `Open-Meteo response field "${field}" must be a supported WMO weather code.`
+    )
+  }
+}
+
+function validateWeatherCodeArray(
+  payload: Record<string, unknown>,
+  field: string
+): void {
+  const value = payload[field]
+
+  if (
+    value !== undefined &&
+    (!Array.isArray(value) ||
+      value.some(
+        (entry) => typeof entry !== 'number' || !weatherCodeSet.has(entry)
+      ))
+  ) {
+    throw new Error(
+      `Open-Meteo response field "${field}" must be an array of supported WMO weather codes.`
+    )
+  }
+}
+
 function validateForecastResponse(payload: unknown): OpenMeteoForecastResponse {
   const root = readStringRecord(payload, 'response')
 
@@ -162,7 +191,9 @@ function validateForecastResponse(payload: unknown): OpenMeteoForecastResponse {
     }
 
     for (const field of OPEN_METEO_CURRENT_FIELDS) {
-      if (field !== 'is_day') {
+      if (field === 'weather_code') {
+        validateWeatherCode(current.weather_code, field)
+      } else if (field !== 'is_day') {
         validateNumberField(current, field)
       }
     }
@@ -174,7 +205,9 @@ function validateForecastResponse(payload: unknown): OpenMeteoForecastResponse {
     validateStringArrayField(hourly, 'time')
 
     for (const field of OPEN_METEO_HOURLY_FIELDS) {
-      if (field !== 'time') {
+      if (field === 'weather_code') {
+        validateWeatherCodeArray(hourly, field)
+      } else if (field !== 'time') {
         validateNumberArrayField(hourly, field)
       }
     }
@@ -188,7 +221,13 @@ function validateForecastResponse(payload: unknown): OpenMeteoForecastResponse {
     validateStringArrayField(daily, 'sunset')
 
     for (const field of OPEN_METEO_DAILY_FIELDS) {
-      if (field !== 'time' && field !== 'sunrise' && field !== 'sunset') {
+      if (field === 'weather_code') {
+        validateWeatherCodeArray(daily, field)
+      } else if (
+        field !== 'time' &&
+        field !== 'sunrise' &&
+        field !== 'sunset'
+      ) {
         validateNumberArrayField(daily, field)
       }
     }
