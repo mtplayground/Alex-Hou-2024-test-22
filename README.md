@@ -37,6 +37,29 @@ npm run format:check
 npm run preview
 ```
 
+## Docker
+
+Build the production image:
+
+```bash
+docker build -t alex-hou-2024-test-22 .
+```
+
+Run the container on `0.0.0.0:8080`:
+
+```bash
+docker run --rm -p 8080:8080 alex-hou-2024-test-22
+```
+
+Override build-time Vite env variables if needed:
+
+```bash
+docker build \
+  --build-arg VITE_DEFAULT_CITY="San Francisco" \
+  --build-arg VITE_REFRESH_INTERVAL_MS=60000 \
+  -t alex-hou-2024-test-22 .
+```
+
 ## Quality setup
 
 - TypeScript project references with strict compiler settings
@@ -44,3 +67,4 @@ npm run preview
 - Prettier for code formatting
 - Tailwind CSS integrated through the Vite plugin and `src/index.css`
 - Typed Vite environment loader in `src/config/env.ts`
+- Multi-stage Docker build with nginx SPA routing
