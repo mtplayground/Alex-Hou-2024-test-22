@@ -68,4 +68,5 @@ docker build \
 - Tailwind CSS integrated through the Vite plugin and `src/index.css`
 - Typed Vite environment loader in `src/config/env.ts`
 - Reusable clock UI in `src/components/clock` with a per-second `useNow()` hook
+- Local 12h/24h clock format toggle via the `clockFormat` prop
 - Multi-stage Docker build with nginx SPA routing
