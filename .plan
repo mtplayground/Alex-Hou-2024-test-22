@@ -1,0 +1,84 @@
+# Architecture Plan
+
+## Project shape
+- Vite + React + TypeScript SPA.
+- Static client app with weather data fetched directly from Open-Meteo APIs.
+- Tailwind for styling, React Query for server-state caching, localStorage for user settings.
+
+## Proposed file organization
+```text
+src/
+  app/
+    App.tsx
+    providers.tsx
+    routes-or-shell/
+  components/
+    clock/
+      Clock.tsx
+      useClock.ts
+    weather/
+      CurrentWeather.tsx
+      Forecast.tsx
+      weatherCodeMap.ts
+    location/
+      LocationPicker.tsx
+    settings/
+      SettingsPanel.tsx
+  features/
+    weather/
+      api.ts
+      queries.ts
+      types.ts
+    geocoding/
+      api.ts
+      queries.ts
+      types.ts
+    settings/
+      settings.ts
+      useSettings.ts
+      types.ts
+  layout/
+    AppShell.tsx
+  lib/
+    env.ts
+    fetcher.ts
+    storage.ts
+    utils.ts
+  types/
+    ui.ts
+  main.tsx
+```
+
+## Shared types
+- `WeatherCurrent`, `WeatherForecast`, and `WeatherCode` for Open-Meteo responses.
+- `LocationOption` for geocoding search and selected location state.
+- `Settings` for time format, preferred forecast mode, and persisted location preferences.
+- Narrow UI-state types for loading, error, and empty-state rendering where helpful.
+
+## Issue dependency order
+1. Issue #1 initializes the app foundation.
+2. Issue #2 adds styling infrastructure used by all UI work.
+3. Issue #3 establishes typed environment access before API clients or Docker config rely on it.
+4. Issue #4 packages the built app for deployment.
+5. Issue #13 should happen early because settings state is consumed by the clock, weather presentation, and layout.
+6. Issue #5 depends on the base React app only.
+7. Issue #6 depends on issues #5 and #13.
+8. Issue #7 establishes the weather API layer and React Query provider.
+9. Issue #8 depends on issue #7 types and powers all weather presentation.
+10. Issue #11 builds geolocation and geocoding primitives needed by the picker.
+11. Issue #12 depends on issue #11 and should expose the selected location to weather queries.
+12. Issue #9 depends on issues #7, #8, and location selection from issues #11/#12.
+13. Issue #10 depends on issues #7, #8, and location selection from issues #11/#12.
+14. Issue #14 assembles the shell around the completed feature pieces.
+15. Issue #15 layers in state handling after core components exist.
+16. Issue #16 finishes accessibility, semantics, responsiveness, and visual polish across the app.
+
+## Key design decisions
+- Keep API code in feature folders with explicit request/response types instead of embedding fetch logic inside components.
+- Centralize `QueryClientProvider` and app-wide settings provider/hooks near the app root.
+- Use a single selected-location source of truth so current weather and forecast stay synchronized.
+- Normalize Open-Meteo weather codes once in a shared mapping module consumed by all weather views.
+- Use a lightweight localStorage adapter with schema defaults to keep persisted settings resilient.
+- Prefer composition over global state libraries; React Query handles remote state and hooks/context handle local preferences.
+- Build presentational components to accept typed props so they can be tested independently from query hooks.
+- Keep environment variables minimal, likely only app metadata or optional default coordinates/search configuration, since Open-Meteo does not require API keys.
