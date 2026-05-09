@@ -39,7 +39,8 @@ function App() {
           <>
             <button
               type="button"
-              className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-950"
+              className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-950 focus-visible:ring-4 focus-visible:ring-emerald-100 focus-visible:outline-none"
+              aria-label="Open settings"
               onClick={() => {
                 setIsSettingsPanelOpen(true)
               }}
@@ -48,7 +49,8 @@ function App() {
             </button>
             <button
               type="button"
-              className="inline-flex items-center justify-center rounded-full bg-slate-950 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-slate-950/15 transition hover:bg-slate-800"
+              className="inline-flex items-center justify-center rounded-full bg-slate-950 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-slate-950/15 transition hover:bg-slate-800 focus-visible:ring-4 focus-visible:ring-slate-300 focus-visible:outline-none"
+              aria-label="Open location picker"
               onClick={() => {
                 setIsLocationPickerOpen(true)
               }}

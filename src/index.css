@@ -26,10 +26,24 @@
     min-height: 100%;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     min-width: 320px;
     margin: 0;
     font-family: var(--font-sans);
     color: #0f172a;
+  }
+
+  ::selection {
+    background: #bae6fd;
+    color: #082f49;
+  }
+
+  :focus-visible {
+    outline: 3px solid #38bdf8;
+    outline-offset: 3px;
   }
 }

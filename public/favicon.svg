@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title>Weather Dashboard</title>
+  <defs>
+    <linearGradient id="sky" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="18" fill="url(#sky)" />
+  <circle cx="23" cy="24" r="10" fill="#fde68a" />
+  <path
+    d="M23 14a10 10 0 0 1 0 20 12 12 0 0 0 10-6 12 12 0 0 0-10-14Z"
+    fill="#f59e0b"
+    opacity=".75"
+  />
+  <path
+    d="M40 44H22a8 8 0 1 1 1.7-15.8A11 11 0 0 1 44 33a7 7 0 0 1-4 11Z"
+    fill="#f8fafc"
+  />
+</svg>
