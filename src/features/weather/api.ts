@@ -250,9 +250,9 @@ export function buildOpenMeteoForecastUrl({
   latitude,
   longitude,
   timezone = 'auto',
-  current = OPEN_METEO_CURRENT_FIELDS,
-  hourly = OPEN_METEO_HOURLY_FIELDS,
-  daily = OPEN_METEO_DAILY_FIELDS,
+  current,
+  hourly,
+  daily,
   forecastDays,
 }: OpenMeteoForecastRequest): string {
   assertFiniteCoordinate(latitude, 'latitude')
