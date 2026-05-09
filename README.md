@@ -32,3 +32,4 @@ npm run preview
 - TypeScript project references with strict compiler settings
 - ESLint flat config with type-aware TypeScript rules
 - Prettier for code formatting
+- Tailwind CSS integrated through the Vite plugin and `src/index.css`
