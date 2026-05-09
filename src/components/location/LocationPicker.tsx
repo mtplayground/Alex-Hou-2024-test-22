@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import type {
   BrowserLocation,
   UseLocationResult,
@@ -58,11 +58,16 @@ export function LocationPicker({
   defaultSearchValue,
 }: LocationPickerProps) {
   const [searchTerm, setSearchTerm] = useState(defaultSearchValue)
+  const titleId = useId()
+  const descriptionId = useId()
+  const searchInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (!isOpen) {
       return
     }
+
+    searchInputRef.current?.focus()
 
     function handleKeyDown(event: KeyboardEvent): void {
       if (event.key === 'Escape') {
@@ -90,7 +95,8 @@ export function LocationPicker({
         <section
           role="dialog"
           aria-modal="true"
-          aria-label="Choose location"
+          aria-labelledby={titleId}
+          aria-describedby={descriptionId}
           className="w-full max-w-2xl rounded-[2rem] bg-white p-6 shadow-2xl shadow-slate-950/25 sm:p-8"
           onClick={(event) => {
             event.stopPropagation()
@@ -98,16 +104,24 @@ export function LocationPicker({
         >
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-sm font-semibold tracking-[0.2em] text-violet-700 uppercase">
+              <p className="text-sm font-semibold tracking-[0.2em] text-indigo-800 uppercase">
                 Location picker
               </p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">
+              <h2
+                id={titleId}
+                className="mt-3 text-3xl font-semibold tracking-tight text-slate-950"
+              >
                 Search or use your location
               </h2>
+              <p id={descriptionId} className="mt-3 text-sm text-slate-600">
+                Search for a city, review matching results, or use your current
+                browser location.
+              </p>
             </div>
             <button
               type="button"
-              className="rounded-full border border-slate-200 px-3 py-2 text-sm text-slate-600 transition hover:border-slate-300 hover:text-slate-950"
+              className="rounded-full border border-slate-200 px-3 py-2 text-sm text-slate-700 transition hover:border-slate-300 hover:text-slate-950"
+              aria-label="Close location picker"
               onClick={onClose}
             >
               Close
@@ -121,18 +135,23 @@ export function LocationPicker({
               void onSearchCity(searchTerm)
             }}
           >
+            <label className="sr-only" htmlFor="location-search">
+              Search for a city
+            </label>
             <input
+              id="location-search"
+              ref={searchInputRef}
               type="search"
               value={searchTerm}
               onChange={(event) => {
                 setSearchTerm(event.target.value)
               }}
               placeholder="Search for a city"
-              className="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-base text-slate-950 outline-none transition focus:border-violet-400 focus:bg-white"
+              className="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-base text-slate-950 outline-none transition focus:border-sky-500 focus:bg-white focus-visible:ring-4 focus-visible:ring-sky-100"
             />
             <button
               type="submit"
-              className="rounded-2xl bg-violet-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-violet-700"
+              className="rounded-2xl bg-sky-700 px-5 py-3 text-sm font-medium text-white transition hover:bg-sky-800 focus-visible:ring-4 focus-visible:ring-sky-200 focus-visible:outline-none"
             >
               Search
             </button>
@@ -142,7 +161,8 @@ export function LocationPicker({
             <button
               type="button"
               disabled={currentLocation === null}
-              className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition enabled:hover:border-slate-300 enabled:hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition enabled:hover:border-slate-300 enabled:hover:text-slate-950 focus-visible:ring-4 focus-visible:ring-sky-100 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+              aria-label="Use my current location"
               onClick={onUseMyLocation}
             >
               {getGeolocationButtonLabel(geolocationStatus)}
@@ -156,7 +176,11 @@ export function LocationPicker({
           </div>
 
           {geolocationError !== null ? (
-            <div className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            <div
+              aria-live="polite"
+              className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
+              role="status"
+            >
               {geolocationError}
             </div>
           ) : null}
@@ -164,12 +188,19 @@ export function LocationPicker({
           <div className="mt-6">
             <div className="flex items-center justify-between">
               <p className="text-sm font-medium text-slate-700">Results</p>
-              <p className="text-sm text-slate-500">Status: {searchStatus}</p>
+              <p aria-live="polite" className="text-sm text-slate-500">
+                Status: {searchStatus}
+              </p>
             </div>
             {searchError !== null ? (
-              <p className="mt-3 text-sm text-red-700">{searchError}</p>
+              <p className="mt-3 text-sm text-red-800" role="alert">
+                {searchError}
+              </p>
             ) : null}
-            <div className="mt-4 max-h-80 space-y-3 overflow-y-auto pr-1">
+            <div
+              aria-live="polite"
+              className="mt-4 max-h-80 space-y-3 overflow-y-auto pr-1"
+            >
               {searchResults.length === 0 ? (
                 <div className="rounded-2xl border border-dashed border-slate-200 px-4 py-5 text-sm text-slate-500">
                   {searchStatus === 'success'
@@ -181,7 +212,7 @@ export function LocationPicker({
                   <button
                     key={result.id}
                     type="button"
-                    className="block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-left transition hover:border-violet-300 hover:bg-white"
+                    className="block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-left transition hover:border-sky-300 hover:bg-white focus-visible:border-sky-500 focus-visible:ring-4 focus-visible:ring-sky-100 focus-visible:outline-none"
                     onClick={() => {
                       onSelectResult(result)
                     }}

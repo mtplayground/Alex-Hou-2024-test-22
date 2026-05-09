@@ -32,17 +32,27 @@ export function Clock({ clockFormat, onClockFormatChange }: ClockProps) {
   const now = useNow()
 
   return (
-    <section className="w-full max-w-3xl rounded-[2rem] border border-white/70 bg-white/85 p-8 shadow-2xl shadow-slate-900/10 backdrop-blur sm:p-12">
+    <section
+      aria-labelledby="clock-panel-title"
+      className="w-full max-w-3xl rounded-[2rem] border border-white/70 bg-white/85 p-8 shadow-2xl shadow-slate-900/10 backdrop-blur sm:p-12"
+    >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <div className="inline-flex items-center rounded-full bg-amber-100 px-4 py-1 text-sm font-semibold tracking-[0.2em] text-amber-900 uppercase">
             Issue 6 of 16
           </div>
-          <h1 className="mt-6 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
+          <h2
+            id="clock-panel-title"
+            className="mt-6 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl"
+          >
             Local time, updated every second
-          </h1>
+          </h2>
         </div>
-        <div className="inline-flex rounded-full border border-slate-200 bg-slate-100 p-1 shadow-inner shadow-slate-200/50">
+        <div
+          aria-label="Clock format"
+          className="inline-flex rounded-full border border-slate-200 bg-slate-100 p-1 shadow-inner shadow-slate-200/50"
+          role="group"
+        >
           {(['12h', '24h'] as const).map((format) => {
             const isActive = clockFormat === format
 
@@ -53,9 +63,10 @@ export function Clock({ clockFormat, onClockFormatChange }: ClockProps) {
                 className={`rounded-full px-4 py-2 text-sm font-medium transition ${
                   isActive
                     ? 'bg-slate-950 text-white shadow-sm'
-                    : 'text-slate-600 hover:text-slate-950'
+                    : 'text-slate-700 hover:text-slate-950'
                 }`}
                 aria-pressed={isActive}
+                aria-label={`Use ${format.toUpperCase()} clock format`}
                 onClick={() => {
                   onClockFormatChange(format)
                 }}

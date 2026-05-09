@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useId } from 'react'
 import type { AppSettings } from '../../features/settings/types'
 
 type SettingsPanelProps = {
@@ -22,6 +22,9 @@ export function SettingsPanel({
   onTemperatureUnitChange,
   onClockFormatChange,
 }: SettingsPanelProps) {
+  const titleId = useId()
+  const descriptionId = useId()
+
   useEffect(() => {
     if (!isOpen) {
       return
@@ -53,7 +56,8 @@ export function SettingsPanel({
         <section
           role="dialog"
           aria-modal="true"
-          aria-label="Settings"
+          aria-labelledby={titleId}
+          aria-describedby={descriptionId}
           className="w-full max-w-xl rounded-[2rem] bg-white p-6 shadow-2xl shadow-slate-950/25 sm:p-8"
           onClick={(event) => {
             event.stopPropagation()
@@ -64,13 +68,20 @@ export function SettingsPanel({
               <p className="text-sm font-semibold tracking-[0.2em] text-emerald-700 uppercase">
                 Settings
               </p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">
+              <h2
+                id={titleId}
+                className="mt-3 text-3xl font-semibold tracking-tight text-slate-950"
+              >
                 Preferences
               </h2>
+              <p id={descriptionId} className="mt-3 text-sm text-slate-600">
+                Choose how time and temperature are displayed across the app.
+              </p>
             </div>
             <button
               type="button"
-              className="rounded-full border border-slate-200 px-3 py-2 text-sm text-slate-600 transition hover:border-slate-300 hover:text-slate-950"
+              className="rounded-full border border-slate-200 px-3 py-2 text-sm text-slate-700 transition hover:border-slate-300 hover:text-slate-950"
+              aria-label="Close settings"
               onClick={onClose}
             >
               Close
@@ -93,7 +104,11 @@ export function SettingsPanel({
                       className={`rounded-full px-4 py-2 text-sm font-medium transition ${
                         isActive
                           ? 'bg-slate-950 text-white shadow-sm'
-                          : 'text-slate-600 hover:text-slate-950'
+                          : 'text-slate-700 hover:text-slate-950'
+                      }`}
+                      aria-pressed={isActive}
+                      aria-label={`Display temperature in ${
+                        unit === 'celsius' ? 'Celsius' : 'Fahrenheit'
                       }`}
                       onClick={() => {
                         onTemperatureUnitChange(unit)
@@ -119,8 +134,10 @@ export function SettingsPanel({
                       className={`rounded-full px-4 py-2 text-sm font-medium transition ${
                         isActive
                           ? 'bg-slate-950 text-white shadow-sm'
-                          : 'text-slate-600 hover:text-slate-950'
+                          : 'text-slate-700 hover:text-slate-950'
                       }`}
+                      aria-pressed={isActive}
+                      aria-label={`Display time in ${format.toUpperCase()} format`}
                       onClick={() => {
                         onClockFormatChange(format)
                       }}

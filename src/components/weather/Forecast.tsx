@@ -35,7 +35,11 @@ export function Forecast({
 
   if (forecastQuery.isPending) {
     return (
-      <section className="w-full rounded-[2rem] border border-white/70 bg-white/85 p-8 shadow-2xl shadow-slate-900/10 backdrop-blur">
+      <section
+        aria-busy="true"
+        aria-live="polite"
+        className="w-full rounded-[2rem] border border-white/70 bg-white/85 p-8 shadow-2xl shadow-slate-900/10 backdrop-blur"
+      >
         <p className="text-sm font-semibold tracking-[0.2em] text-indigo-700 uppercase">
           Forecast
         </p>
@@ -63,7 +67,10 @@ export function Forecast({
 
   if (forecastQuery.isError) {
     return (
-      <section className="w-full rounded-[2rem] border border-red-200 bg-red-50/90 p-8 shadow-lg shadow-red-900/5">
+      <section
+        aria-live="assertive"
+        className="w-full rounded-[2rem] border border-red-200 bg-red-50/90 p-8 shadow-lg shadow-red-900/5"
+      >
         <p className="text-sm font-semibold tracking-[0.2em] text-red-700 uppercase">
           Forecast
         </p>
@@ -75,7 +82,7 @@ export function Forecast({
         </p>
         <button
           type="button"
-          className="mt-5 rounded-full border border-red-200 bg-white px-4 py-2 text-sm font-medium text-red-800 transition hover:border-red-300 hover:bg-red-50"
+          className="mt-5 rounded-full border border-red-200 bg-white px-4 py-2 text-sm font-medium text-red-800 transition hover:border-red-300 hover:bg-red-50 focus-visible:ring-4 focus-visible:ring-red-100 focus-visible:outline-none"
           onClick={() => {
             void forecastQuery.refetch()
           }}
@@ -90,13 +97,19 @@ export function Forecast({
   const temperatureUnitLabel = getTemperatureUnitLabel(temperatureUnit)
 
   return (
-    <section className="w-full rounded-[2rem] border border-white/70 bg-white/85 p-8 shadow-2xl shadow-slate-900/10 backdrop-blur">
+    <section
+      aria-labelledby="forecast-title"
+      className="w-full rounded-[2rem] border border-white/70 bg-white/85 p-8 shadow-2xl shadow-slate-900/10 backdrop-blur"
+    >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-sm font-semibold tracking-[0.2em] text-indigo-700 uppercase">
             Forecast
           </p>
-          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+          <h2
+            id="forecast-title"
+            className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl"
+          >
             {title}
           </h2>
         </div>
