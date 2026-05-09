@@ -2,7 +2,13 @@ import { useEffect, useState } from 'react'
 import { searchOpenMeteoLocations } from './api'
 import type { OpenMeteoGeocodingResult } from './types'
 
-type GeolocationStatus = 'idle' | 'locating' | 'ready' | 'unsupported' | 'error'
+type GeolocationStatus =
+  | 'idle'
+  | 'locating'
+  | 'ready'
+  | 'unsupported'
+  | 'permission-denied'
+  | 'error'
 type SearchStatus = 'idle' | 'searching' | 'success' | 'error'
 
 export type BrowserLocation = {
@@ -62,8 +68,18 @@ export function useLocation(): UseLocationResult {
           return
         }
 
+        if (error.code === error.PERMISSION_DENIED) {
+          setGeolocationStatus('permission-denied')
+          setGeolocationError(
+            'Location access was blocked. You can still search for a city manually.'
+          )
+          return
+        }
+
         setGeolocationStatus('error')
-        setGeolocationError(error.message)
+        setGeolocationError(
+          error.message || 'Unable to detect your current location.'
+        )
       },
       {
         enableHighAccuracy: false,

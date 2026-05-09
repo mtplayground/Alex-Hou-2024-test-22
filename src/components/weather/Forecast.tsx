@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { SkeletonBlock } from '../ui/SkeletonBlock'
 import {
   FORECAST_REFRESH_INTERVAL_MS,
   forecastQueryOptions,
@@ -41,7 +42,21 @@ export function Forecast({
         <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950">
           {title}
         </h2>
-        <p className="mt-4 text-slate-600">Loading the upcoming forecast...</p>
+        <div className="mt-8 -mx-2 overflow-x-auto px-2">
+          <div className="flex min-w-max gap-4">
+            {Array.from({ length: forecastDays }).map((_, index) => (
+              <div
+                key={index}
+                className="w-40 flex-none rounded-[1.5rem] border border-slate-200 bg-slate-950 px-5 py-6"
+              >
+                <SkeletonBlock className="h-4 w-16 bg-slate-700/80" />
+                <SkeletonBlock className="mt-4 h-10 w-10 bg-slate-700/80" />
+                <SkeletonBlock className="mt-4 h-4 w-24 bg-slate-700/80" />
+                <SkeletonBlock className="mt-6 h-8 w-20 bg-slate-700/80" />
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
     )
   }
@@ -56,8 +71,17 @@ export function Forecast({
           {title}
         </h2>
         <p className="mt-4 text-red-700">
-          Unable to load the daily outlook right now.
+          We couldn&apos;t load the daily outlook. Try again in a moment.
         </p>
+        <button
+          type="button"
+          className="mt-5 rounded-full border border-red-200 bg-white px-4 py-2 text-sm font-medium text-red-800 transition hover:border-red-300 hover:bg-red-50"
+          onClick={() => {
+            void forecastQuery.refetch()
+          }}
+        >
+          Retry forecast
+        </button>
       </section>
     )
   }

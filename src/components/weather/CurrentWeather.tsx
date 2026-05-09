@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { SkeletonBlock } from '../ui/SkeletonBlock'
 import {
   CURRENT_WEATHER_REFRESH_INTERVAL_MS,
   currentWeatherQueryOptions,
@@ -49,7 +50,18 @@ export function CurrentWeather({
         <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950">
           {title}
         </h2>
-        <p className="mt-4 text-slate-600">Loading the latest forecast...</p>
+        <div className="mt-8 grid gap-4 lg:grid-cols-[1.4fr_1fr]">
+          <div className="rounded-[1.75rem] bg-slate-950 px-6 py-8 text-white">
+            <SkeletonBlock className="h-4 w-24 bg-slate-700/80" />
+            <SkeletonBlock className="mt-6 h-10 w-40 bg-slate-700/80" />
+            <SkeletonBlock className="mt-8 h-14 w-36 bg-slate-700/80" />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
+            <SkeletonBlock className="h-28 bg-slate-200" />
+            <SkeletonBlock className="h-28 bg-slate-200" />
+            <SkeletonBlock className="h-28 bg-slate-200" />
+          </div>
+        </div>
       </section>
     )
   }
@@ -64,8 +76,18 @@ export function CurrentWeather({
           {title}
         </h2>
         <p className="mt-4 text-red-700">
-          Unable to load current conditions right now.
+          We couldn&apos;t load the latest current conditions. Check your
+          connection and try again.
         </p>
+        <button
+          type="button"
+          className="mt-5 rounded-full border border-red-200 bg-white px-4 py-2 text-sm font-medium text-red-800 transition hover:border-red-300 hover:bg-red-50"
+          onClick={() => {
+            void weatherQuery.refetch()
+          }}
+        >
+          Retry current weather
+        </button>
       </section>
     )
   }
