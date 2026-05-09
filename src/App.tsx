@@ -9,6 +9,7 @@ import type { OpenMeteoGeocodingResult } from './features/geocoding/types'
 import { useLocation } from './features/geocoding/useLocation'
 import { useSettings } from './features/settings/useSettings'
 import type { SavedLocation } from './features/settings/types'
+import { AppShell } from './layout/AppShell'
 
 const DEFAULT_LOCATION: SavedLocation = {
   label: appConfig.defaultCity,
@@ -31,61 +32,45 @@ function App() {
 
   return (
     <>
-      <main className="min-h-screen px-6 py-10">
-        <div className="mx-auto w-full max-w-5xl">
-          <header className="rounded-[2rem] border border-white/70 bg-white/80 px-6 py-6 shadow-2xl shadow-slate-900/10 backdrop-blur sm:px-8">
-            <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-              <div>
-                <p className="text-sm font-semibold tracking-[0.2em] text-violet-700 uppercase">
-                  Weather dashboard
-                </p>
-                <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
-                  {activeLocation.label}
-                </h1>
-                <p className="mt-3 max-w-2xl text-sm text-slate-500 sm:text-base">
-                  {activeLocation.subtitle}
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-950"
-                  onClick={() => {
-                    setIsSettingsPanelOpen(true)
-                  }}
-                >
-                  Settings
-                </button>
-                <button
-                  type="button"
-                  className="inline-flex items-center justify-center rounded-full bg-slate-950 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-slate-950/15 transition hover:bg-slate-800"
-                  onClick={() => {
-                    setIsLocationPickerOpen(true)
-                  }}
-                >
-                  Change location
-                </button>
-              </div>
-            </div>
-          </header>
-
-          <div className="mt-6">
-            <Clock
-              clockFormat={settings.clockFormat}
-              onClockFormatChange={setClockFormat}
-            />
-          </div>
-
-          <div className="mt-6">
+      <AppShell
+        locationLabel={activeLocation.label}
+        locationSubtitle={activeLocation.subtitle}
+        headerActions={
+          <>
+            <button
+              type="button"
+              className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-950"
+              onClick={() => {
+                setIsSettingsPanelOpen(true)
+              }}
+            >
+              Settings
+            </button>
+            <button
+              type="button"
+              className="inline-flex items-center justify-center rounded-full bg-slate-950 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-slate-950/15 transition hover:bg-slate-800"
+              onClick={() => {
+                setIsLocationPickerOpen(true)
+              }}
+            >
+              Change location
+            </button>
+          </>
+        }
+        leftPanel={
+          <Clock
+            clockFormat={settings.clockFormat}
+            onClockFormatChange={setClockFormat}
+          />
+        }
+        rightPanel={
+          <>
             <CurrentWeather
               latitude={activeLocation.latitude}
               longitude={activeLocation.longitude}
               temperatureUnit={settings.temperatureUnit}
               title={`Current weather in ${activeLocation.label}`}
             />
-          </div>
-
-          <div className="mt-6">
             <Forecast
               latitude={activeLocation.latitude}
               longitude={activeLocation.longitude}
@@ -93,9 +78,9 @@ function App() {
               title={`5-day outlook for ${activeLocation.label}`}
               forecastDays={5}
             />
-          </div>
-        </div>
-      </main>
+          </>
+        }
+      />
 
       <LocationPicker
         isOpen={isLocationPickerOpen}
