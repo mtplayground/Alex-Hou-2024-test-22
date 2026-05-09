@@ -1,20 +1,16 @@
 import { useState } from 'react'
-import { Clock, type ClockFormat } from './components/clock/Clock'
+import { Clock } from './components/clock/Clock'
 import { LocationPicker } from './components/location/LocationPicker'
+import { SettingsPanel } from './components/settings/SettingsPanel'
 import { CurrentWeather } from './components/weather/CurrentWeather'
 import { Forecast } from './components/weather/Forecast'
 import { appConfig } from './config/env'
 import type { OpenMeteoGeocodingResult } from './features/geocoding/types'
 import { useLocation } from './features/geocoding/useLocation'
+import { useSettings } from './features/settings/useSettings'
+import type { SavedLocation } from './features/settings/types'
 
-type SelectedLocation = {
-  label: string
-  latitude: number
-  longitude: number
-  subtitle: string
-}
-
-const DEFAULT_LOCATION: SelectedLocation = {
+const DEFAULT_LOCATION: SavedLocation = {
   label: appConfig.defaultCity,
   latitude: 37.7749,
   longitude: -122.4194,
@@ -26,11 +22,12 @@ function buildResultSubtitle(result: OpenMeteoGeocodingResult): string {
 }
 
 function App() {
-  const [clockFormat, setClockFormat] = useState<ClockFormat>('24h')
   const [isLocationPickerOpen, setIsLocationPickerOpen] = useState(false)
-  const [selectedLocation, setSelectedLocation] =
-    useState<SelectedLocation>(DEFAULT_LOCATION)
+  const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false)
   const location = useLocation()
+  const { settings, setClockFormat, setLastSelectedCity, setTemperatureUnit } =
+    useSettings()
+  const activeLocation = settings.lastSelectedCity ?? DEFAULT_LOCATION
 
   return (
     <>
@@ -43,44 +40,57 @@ function App() {
                   Weather dashboard
                 </p>
                 <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
-                  {selectedLocation.label}
+                  {activeLocation.label}
                 </h1>
                 <p className="mt-3 max-w-2xl text-sm text-slate-500 sm:text-base">
-                  {selectedLocation.subtitle}
+                  {activeLocation.subtitle}
                 </p>
               </div>
-              <button
-                type="button"
-                className="inline-flex items-center justify-center rounded-full bg-slate-950 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-slate-950/15 transition hover:bg-slate-800"
-                onClick={() => {
-                  setIsLocationPickerOpen(true)
-                }}
-              >
-                Change location
-              </button>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-950"
+                  onClick={() => {
+                    setIsSettingsPanelOpen(true)
+                  }}
+                >
+                  Settings
+                </button>
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center rounded-full bg-slate-950 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-slate-950/15 transition hover:bg-slate-800"
+                  onClick={() => {
+                    setIsLocationPickerOpen(true)
+                  }}
+                >
+                  Change location
+                </button>
+              </div>
             </div>
           </header>
 
           <div className="mt-6">
             <Clock
-              clockFormat={clockFormat}
+              clockFormat={settings.clockFormat}
               onClockFormatChange={setClockFormat}
             />
           </div>
 
           <div className="mt-6">
             <CurrentWeather
-              latitude={selectedLocation.latitude}
-              longitude={selectedLocation.longitude}
-              title={`Current weather in ${selectedLocation.label}`}
+              latitude={activeLocation.latitude}
+              longitude={activeLocation.longitude}
+              temperatureUnit={settings.temperatureUnit}
+              title={`Current weather in ${activeLocation.label}`}
             />
           </div>
 
           <div className="mt-6">
             <Forecast
-              latitude={selectedLocation.latitude}
-              longitude={selectedLocation.longitude}
-              title={`5-day outlook for ${selectedLocation.label}`}
+              latitude={activeLocation.latitude}
+              longitude={activeLocation.longitude}
+              temperatureUnit={settings.temperatureUnit}
+              title={`5-day outlook for ${activeLocation.label}`}
               forecastDays={5}
             />
           </div>
@@ -94,7 +104,7 @@ function App() {
         }}
         onSearchCity={location.searchCity}
         onSelectResult={(result) => {
-          setSelectedLocation({
+          setLastSelectedCity({
             label: result.name,
             latitude: result.latitude,
             longitude: result.longitude,
@@ -109,7 +119,7 @@ function App() {
             return
           }
 
-          setSelectedLocation({
+          setLastSelectedCity({
             label: 'My location',
             latitude: location.location.latitude,
             longitude: location.location.longitude,
@@ -126,6 +136,16 @@ function App() {
         geolocationError={location.geolocationError}
         currentLocation={location.location}
         defaultSearchValue={appConfig.defaultCity}
+      />
+
+      <SettingsPanel
+        isOpen={isSettingsPanelOpen}
+        onClose={() => {
+          setIsSettingsPanelOpen(false)
+        }}
+        settings={settings}
+        onTemperatureUnitChange={setTemperatureUnit}
+        onClockFormatChange={setClockFormat}
       />
     </>
   )

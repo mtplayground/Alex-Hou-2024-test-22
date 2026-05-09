@@ -3,11 +3,17 @@ import {
   CURRENT_WEATHER_REFRESH_INTERVAL_MS,
   currentWeatherQueryOptions,
 } from '../../features/weather/currentWeather'
+import type { TemperatureUnit } from '../../features/settings/types'
+import {
+  convertTemperature,
+  getTemperatureUnitLabel,
+} from '../../features/weather/temperature'
 
 type CurrentWeatherProps = {
   latitude: number
   longitude: number
   title?: string
+  temperatureUnit: TemperatureUnit
 }
 
 const observedAtFormatter = new Intl.DateTimeFormat(undefined, {
@@ -25,6 +31,7 @@ export function CurrentWeather({
   latitude,
   longitude,
   title = 'Current weather',
+  temperatureUnit,
 }: CurrentWeatherProps) {
   const weatherQuery = useQuery(
     currentWeatherQueryOptions({
@@ -64,6 +71,15 @@ export function CurrentWeather({
   }
 
   const weather = weatherQuery.data
+  const displayTemperature = convertTemperature(
+    weather.temperature,
+    temperatureUnit
+  )
+  const displayFeelsLike = convertTemperature(
+    weather.feelsLike,
+    temperatureUnit
+  )
+  const temperatureUnitLabel = getTemperatureUnitLabel(temperatureUnit)
 
   return (
     <section className="w-full rounded-[2rem] border border-white/70 bg-white/85 p-8 shadow-2xl shadow-slate-900/10 backdrop-blur">
@@ -101,9 +117,9 @@ export function CurrentWeather({
             </div>
           </div>
           <p className="mt-8 text-6xl font-semibold tracking-tight">
-            {Math.round(weather.temperature)}
+            {Math.round(displayTemperature)}
             <span className="ml-2 text-2xl font-medium text-slate-300">
-              {weather.temperatureUnit}
+              {temperatureUnitLabel}
             </span>
           </p>
         </div>
@@ -112,7 +128,7 @@ export function CurrentWeather({
           <div className="rounded-2xl bg-sky-50 px-5 py-4 text-sky-950">
             <dt className="text-sm font-medium text-sky-700">Feels like</dt>
             <dd className="mt-2 text-2xl font-semibold tracking-tight">
-              {formatMeasurement(weather.feelsLike, weather.feelsLikeUnit)}
+              {formatMeasurement(displayFeelsLike, temperatureUnitLabel)}
             </dd>
           </div>
           <div className="rounded-2xl bg-emerald-50 px-5 py-4 text-emerald-950">

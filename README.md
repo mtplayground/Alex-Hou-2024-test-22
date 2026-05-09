@@ -75,4 +75,5 @@ docker build \
 - `Forecast` daily outlook cards in `src/components/weather/Forecast.tsx`
 - Typed Open-Meteo geocoding client and `useLocation()` hook under `src/features/geocoding`
 - Header-triggered `LocationPicker` modal/drawer in `src/components/location/LocationPicker.tsx`
+- `SettingsPanel` and persisted `useSettings()` context under `src/features/settings`
 - Multi-stage Docker build with nginx SPA routing
