@@ -1,6 +1,5 @@
 import { useNow } from './useNow'
-
-export type ClockFormat = '12h' | '24h'
+import type { ClockFormat } from '../../features/settings/types'
 
 const timeFormatters: Record<ClockFormat, Intl.DateTimeFormat> = {
   '12h': new Intl.DateTimeFormat(undefined, {

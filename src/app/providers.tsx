@@ -3,6 +3,7 @@ import {
   type QueryClientProviderProps,
 } from '@tanstack/react-query'
 import type { PropsWithChildren } from 'react'
+import { SettingsProvider } from '../features/settings/SettingsProvider'
 import { queryClient } from '../lib/queryClient'
 
 type AppProvidersProps = PropsWithChildren<{
@@ -15,7 +16,7 @@ export function AppProviders({
 }: AppProvidersProps) {
   return (
     <QueryClientProvider client={queryClientOverride ?? queryClient}>
-      {children}
+      <SettingsProvider>{children}</SettingsProvider>
     </QueryClientProvider>
   )
 }

@@ -3,12 +3,18 @@ import {
   FORECAST_REFRESH_INTERVAL_MS,
   forecastQueryOptions,
 } from '../../features/weather/forecast'
+import type { TemperatureUnit } from '../../features/settings/types'
+import {
+  convertTemperature,
+  getTemperatureUnitLabel,
+} from '../../features/weather/temperature'
 
 type ForecastProps = {
   latitude: number
   longitude: number
   title?: string
   forecastDays?: number
+  temperatureUnit: TemperatureUnit
 }
 
 export function Forecast({
@@ -16,6 +22,7 @@ export function Forecast({
   longitude,
   title = 'Forecast',
   forecastDays = 5,
+  temperatureUnit,
 }: ForecastProps) {
   const forecastQuery = useQuery(
     forecastQueryOptions({
@@ -56,6 +63,7 @@ export function Forecast({
   }
 
   const days = forecastQuery.data
+  const temperatureUnitLabel = getTemperatureUnitLabel(temperatureUnit)
 
   return (
     <section className="w-full rounded-[2rem] border border-white/70 bg-white/85 p-8 shadow-2xl shadow-slate-900/10 backdrop-blur">
@@ -91,18 +99,22 @@ export function Forecast({
                 <div>
                   <p className="text-xs text-slate-400">High</p>
                   <p className="text-2xl font-semibold tracking-tight">
-                    {Math.round(day.temperatureMax)}
+                    {Math.round(
+                      convertTemperature(day.temperatureMax, temperatureUnit)
+                    )}
                     <span className="ml-1 text-sm text-slate-300">
-                      {day.temperatureUnit}
+                      {temperatureUnitLabel}
                     </span>
                   </p>
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-slate-400">Low</p>
                   <p className="text-xl font-semibold tracking-tight text-slate-200">
-                    {Math.round(day.temperatureMin)}
+                    {Math.round(
+                      convertTemperature(day.temperatureMin, temperatureUnit)
+                    )}
                     <span className="ml-1 text-sm text-slate-400">
-                      {day.temperatureUnit}
+                      {temperatureUnitLabel}
                     </span>
                   </p>
                 </div>
