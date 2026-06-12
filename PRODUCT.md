@@ -7,7 +7,8 @@
 ## What It Does Today
 
 - Shows a live local clock with `12h` and `24h` display modes.
-- Fetches current conditions and a 5-day forecast from Open-Meteo.
+- Fetches current conditions and a 5-day forecast from Open-Meteo when configured for live weather.
+- Can render deterministic demo weather data for deployments that should not make external browser weather requests.
 - Lets the user pick a location by city search or browser geolocation.
 - Persists user preferences in `localStorage`:
   - temperature unit (`°C` / `°F`)
@@ -38,6 +39,7 @@
 
 - React Query is the data-fetching layer.
 - Open-Meteo is the weather and geocoding provider.
+- Weather data can run in `live` or `demo` mode via Vite-safe configuration.
 - Tailwind CSS is the styling system.
 - Feature logic lives under `src/features`; presentational UI lives under `src/components`.
 - Production output is a static build served behind nginx.
@@ -45,5 +47,5 @@
 ## Conventions
 
 - Strict TypeScript, ESLint, and Prettier are part of the contract.
-- Vite-safe environment values drive client config such as default city and refresh interval.
+- Vite-safe environment values drive client config such as default city, refresh interval, and weather source.
 - `main` is the current source of truth.
