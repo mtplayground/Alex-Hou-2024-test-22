@@ -100,6 +100,11 @@ export function CurrentWeather({
   }
 
   const weather = weatherQuery.data
+
+  if (weather === undefined) {
+    return null
+  }
+
   const displayTemperature = convertTemperature(
     weather.temperature,
     temperatureUnit

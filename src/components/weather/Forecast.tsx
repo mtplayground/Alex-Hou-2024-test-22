@@ -94,6 +94,11 @@ export function Forecast({
   }
 
   const days = forecastQuery.data
+
+  if (days === undefined) {
+    return null
+  }
+
   const temperatureUnitLabel = getTemperatureUnitLabel(temperatureUnit)
 
   return (

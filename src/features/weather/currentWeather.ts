@@ -1,4 +1,5 @@
 import { queryOptions } from '@tanstack/react-query'
+import { appConfig } from '../../config/env'
 import { fetchOpenMeteoForecast } from './api'
 import type { OpenMeteoForecastResponse, OpenMeteoWeatherCode } from './types'
 import { getOpenMeteoWeatherCodePresentation } from './weatherCodes'
@@ -78,7 +79,28 @@ function mapForecastToCurrentWeather(
   }
 }
 
+function buildDemoCurrentWeather(): CurrentWeatherData {
+  return {
+    latitude: 37.7749,
+    longitude: -122.4194,
+    observedAt: new Date().toISOString(),
+    temperature: 18.9,
+    temperatureUnit: '°C',
+    feelsLike: 18.1,
+    feelsLikeUnit: '°C',
+    humidity: 72,
+    humidityUnit: '%',
+    windSpeed: 13.2,
+    windSpeedUnit: 'km/h',
+    weatherCode: 2,
+    weatherLabel: 'Partly cloudy',
+    weatherIcon: '⛅',
+  }
+}
+
 export function currentWeatherQueryOptions(request: CurrentWeatherRequest) {
+  const isDemoWeather = appConfig.weatherSource === 'demo'
+
   return queryOptions({
     queryKey: ['weather', 'current', request] as const,
     queryFn: async () =>
@@ -92,6 +114,8 @@ export function currentWeatherQueryOptions(request: CurrentWeatherRequest) {
             : { timezone: request.timezone }),
         })
       ),
+    enabled: !isDemoWeather,
+    initialData: isDemoWeather ? buildDemoCurrentWeather : undefined,
     staleTime: CURRENT_WEATHER_REFRESH_INTERVAL_MS,
     refetchInterval: CURRENT_WEATHER_REFRESH_INTERVAL_MS,
   })

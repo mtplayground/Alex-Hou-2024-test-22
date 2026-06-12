@@ -1,4 +1,5 @@
 import { queryOptions } from '@tanstack/react-query'
+import { appConfig } from '../../config/env'
 import { fetchOpenMeteoForecast } from './api'
 import type { OpenMeteoForecastResponse, OpenMeteoWeatherCode } from './types'
 import { getOpenMeteoWeatherCodePresentation } from './weatherCodes'
@@ -108,12 +109,43 @@ function mapForecastToDays(response: OpenMeteoForecastResponse): ForecastDay[] {
   return forecastDays
 }
 
+function buildDemoForecastDays(dayCount: number): ForecastDay[] {
+  const demoCodes: OpenMeteoWeatherCode[] = [2, 3, 3, 51, 2]
+  const demoHighs = [19, 21, 24, 18, 20]
+  const demoLows = [10, 12, 13, 11, 12]
+  const days: ForecastDay[] = []
+
+  for (let index = 0; index < dayCount; index += 1) {
+    const date = new Date()
+    date.setDate(date.getDate() + index)
+
+    const weatherCode = demoCodes[index % demoCodes.length] ?? 2
+    const presentation = getOpenMeteoWeatherCodePresentation(weatherCode)
+    const isoDate = date.toISOString().slice(0, 10)
+
+    days.push({
+      date: isoDate,
+      label: weekdayFormatter.format(date),
+      weatherCode,
+      weatherLabel: presentation.label,
+      weatherIcon: presentation.icon,
+      temperatureMax: demoHighs[index % demoHighs.length] ?? 19,
+      temperatureMin: demoLows[index % demoLows.length] ?? 10,
+      temperatureUnit: '°C',
+    })
+  }
+
+  return days
+}
+
 export function forecastQueryOptions({
   latitude,
   longitude,
   timezone,
   forecastDays = 5,
 }: ForecastRequest) {
+  const isDemoWeather = appConfig.weatherSource === 'demo'
+
   return queryOptions({
     queryKey: [
       'weather',
@@ -131,6 +163,10 @@ export function forecastQueryOptions({
           ...(timezone === undefined ? {} : { timezone }),
         })
       ),
+    enabled: !isDemoWeather,
+    initialData: isDemoWeather
+      ? () => buildDemoForecastDays(forecastDays)
+      : undefined,
     staleTime: FORECAST_REFRESH_INTERVAL_MS,
     refetchInterval: FORECAST_REFRESH_INTERVAL_MS,
   })
